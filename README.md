@@ -10,6 +10,8 @@
 This repository contains code for running Object-Centric Kinematics algorithm.
 
 ## Installation
+TBU
+<!--
 ### Create Conda Env
 Install and use the included anaconda environment.
 ```
@@ -21,3 +23,4 @@ Install and use the included anaconda environment.
 
 ## Questions
 If you have any questions, comments, or suggestions, please reach out to Yeon-Ji Song (yjsong@snu.ac.kr)
+-->
