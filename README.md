@@ -1,4 +1,4 @@
-# Unsupervised Dynamics Prediction with Object-Centric Kinematics
+# OCK: Unsupervised Dynamics Prediction with Object-Centric Kinematics
 
 [Yeon-Ji Song](https://yeonjisong.github.io/), &nbsp; Suhyung Choi, &nbsp; Jaein Kim, &nbsp; Jin-Hwa Kim, &nbsp; Byoung-Tak Zhang 
 
@@ -23,7 +23,7 @@ conda activate ock
 conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
 ```
 
-The codebase heavily relies on [SlotFormer](https://github.com/pairlab/SlotFormer). Please refer to step-by-step guidance on how to install the requirements in SlotFormer.
+The codebase heavily relies on [SlotFormer](https://github.com/pairlab/SlotFormer). Please refer to the step-by-step guidance on how to install the requirements in SlotFormer.
 
 
 ## Dataset Preparation
@@ -35,15 +35,15 @@ Download it manually from the [Google drive](https://drive.google.com/file/d/1XS
 **MOVi**:
 Please download MOVi-{A-E} from the official [website](https://github.com/google-research/kubric/tree/main/challenges/movi).
 
-**WAYMO**: Download Waymo Open Dataset from their official [website](https://waymo.com/open/). You may need to sign in with your Google account to request for access.
+**WAYMO**: Download Waymo Open Dataset from their official [website](https://waymo.com/open/). You may need to sign in with your Google account to request access.
 
 
 
 ## Experiments
-The basic experiment pipeline in this project are:
+The basic experiment pipeline in this project is:
 
 1. Pre-train object-centric slot models `SAVi` on raw videos. After training, the models should be able to decompose the scene into meaningful objects, represented by a set of slots.
-2. Apply pre-trained object-centric model to extract slots from videos, and save them to disk.
+2. Apply pretrained object-centric model to extract slots from videos and save them to disk.
 3. Train `OCK` over the extracted slots to learn the dynamics of videos.
 
 ### Pretrain SAVi
@@ -61,11 +61,11 @@ python ock/base_slots/extract_slots.py \
     --weight $WEIGHT \
     --save_path $SAVE_PATH (e.g. './data/OBJ3D/slots.pkl')
 ```
-This will extract slots from OBJ3D videos, and save them into a `.pkl` file.
+This will extract slots from OBJ3D videos and save them into a `.pkl` file.
 
 
 ### Train OCK 
-Train a OCK model on extracted slots by running:
+Train an OCK model on extracted slots by running:
 
 ```
 python scripts/train.py --task video_prediction \
@@ -75,7 +75,7 @@ python scripts/train.py --task video_prediction \
 
 
 ### Evaluate OCK
-To evalute the video prediction task, please use [test.py](../ock/video_prediction/test.py) and run:
+To evaluate the video prediction task, please use [test.py](../ock/video_prediction/test.py) and run:
 ```
 python ock/video_prediction/test_vp.py \
     --params ock/video_prediction/configs/ock_{dataset}_params.py \
