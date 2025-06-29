@@ -7,7 +7,7 @@
 ![image](figures/architecture.png)
 
 ## Abstract
-Human perception involves discerning complex multi-object scenes into time-static object appearance (\ie, size, shape, color) and time-varying object motion (\ie, location, velocity, acceleration). This innate ability to unconsciously understand the environment is the motivation behind the success of dynamics modeling. Object-centric representations have emerged as a promising tool for dynamics prediction, yet they primarily focus on the objects' appearance, often overlooking other crucial attributes. In this paper, we propose Object-Centric Kinematics (OCK), a framework for dynamics prediction leveraging object-centric representations. Our model utilizes a novel component named object kinematics, which comprises low-level structured states of objects' position, velocity, and acceleration. The object kinematics are obtained via either implicit or explicit approaches, enabling comprehensive spatiotemporal object reasoning, and integrated through various transformer mechanisms, facilitating effective object-centric dynamics modeling. Our model demonstrates superior performance when handling objects and backgrounds in complex scenes characterized by a wide range of object attributes and dynamic movements. Moreover, our model demonstrates generalization capabilities across diverse synthetic environments, highlighting its potential for broad applicability in vision-related tasks.
+Human perception involves discerning complex multi-object scenes into time-static object appearance (\ie, size, shape, color) and time-varying object motion (\ie, location, velocity, acceleration). This innate ability to unconsciously understand the environment is the motivation behind the success of dynamic modeling. Object-centric representations have emerged as a promising tool for dynamics prediction, yet they primarily focus on the objects' appearance, often overlooking other crucial attributes. In this paper, we propose Object-Centric Kinematics (OCK), a framework for dynamics prediction leveraging object-centric representations. Our model utilizes a novel component named object kinematics, which comprises low-level structured states of objects' position, velocity, and acceleration. The object kinematics are obtained via either implicit or explicit approaches, enabling comprehensive spatiotemporal object reasoning, and integrated through various transformer mechanisms, facilitating effective object-centric dynamics modeling. Our model demonstrates superior performance when handling objects and backgrounds in complex scenes characterized by a wide range of object attributes and dynamic movements. Moreover, our model demonstrates generalization capabilities across diverse synthetic environments, highlighting its potential for broad applicability in vision-related tasks.
 
 ## Update
 The code is coming soon!
@@ -25,7 +25,6 @@ conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit
 The codebase heavily relies on [SlotFormer](https://github.com/pairlab/SlotFormer) and [OCVP](https://github.com/AIS-Bonn/OCVP-object-centric-video-prediction).
 Please refer to the step-by-step guidance on how to install the [requirements](https://github.com/AIS-Bonn/OCVP-object-centric-video-prediction/blob/master/assets/docs/INSTALL.md).
 
-
 ## Dataset Preparation
 All datasets should be downloaded or soft-linked to ./data/. All datasets should be downloaded or soft-linked to ./data/. Or you can modify the data_root value in the config files.
 
@@ -36,7 +35,6 @@ Download it manually from the [Google drive](https://drive.google.com/file/d/1XS
 Please download MOVi-{A-E} from the official [website](https://github.com/google-research/kubric/tree/main/challenges/movi).
 
 **WAYMO**: Download Waymo Open Dataset from their official [website](https://waymo.com/open/). You may need to sign in with your Google account to request access.
-
 
 ## Evaluation
 The basic experiment pipeline in this project is:
@@ -89,46 +87,30 @@ python 04_train_predictor.py -d EXP_DIRECTORY [--checkpoint CHECKPOINT] [--resum
 
 
 ### Evaluate OCK
-To evaluate an object-centric video predictor module (i.e. LSTM, Transformer, OCK) run:
+To evaluate the video prediction task, please use [test.py](../ock/video_prediction/test.py) and run:
 ```
-python 05_evaluate_predictor.py -d EXP_DIRECTORY -m SAVI_MODEL --name_predictor_experiment NAME_PREDICTOR_EXPERIMENT --checkpoint CHECKPOINT [--num_preds NUM_PREDS]
-
-arguments:
-  -d EXP_DIRECTORY, --exp_directory EXP_DIRECTORY
-                        Path to the father exp. directory
-  -m SAVI_MODEL, --savi_model SAVI_MODEL
-                        Name of the SAVi checkpoint to load
-  --name_predictor_experiment NAME_PREDICTOR_EXPERIMENT
-                        Name to the directory inside the exp_directory corresponding to a predictor experiment.
-  --checkpoint CHECKPOINT
-                        Checkpoint with predictor pre-trained parameters to load for evaluation
-  --num_preds NUM_PREDS
-                        Number of rollout frames to predict for (i.e., 10)
+python ock/video_prediction/test_vp.py \
+    --params ock/video_prediction/configs/ock_{dataset}_params.py \
+    --weight $WEIGHT
 ```
-
-You can generate figures and animations using the following script:
-```
-python src/06_generate_figs_pred.py \
-      -d experiments/Obj3D/ \
-      --savi_model savi_obj3d.pth \
-      --name_predictor_experiment Predictor_OCK \
-      --checkpoint OCK_obj3d.pth \
-      --num_seqs 5 \
-      --num_preds 10
-```
+This will compute and print all the metrics.
+Besides, it will also save 10 videos for visualization under `vis/obj3d/$PARAMS/`.
+If you only want to do visualizations (i.e. not testing the metrics), simply use the `--save_num` args and set it to a positive value.
 
 
 ## Citation
-If you find our work useful in your research, please consider to cite our paper!
+If you find our work useful in your research, please consider citing our paper!
+
 
 ## Acknowledgement
 Special thanks to the following awesome projects!
 - [Slot-Attention](https://github.com/google-research/google-research/tree/master/slot_attention)
-- [slot_attention.pytorch](https://github.com/untitled-ai/slot_attention)\
+- [slot_attention.pytorch](https://github.com/untitled-ai/slot_attention)
 - [SAVi](https://github.com/google-research/slot-attention-video/)
 - [SlotFormer](https://github.com/pairlab/SlotFormer/)
-
+- [OCVP](https://github.com/AIS-Bonn/OCVP-object-centric-video-prediction)
 
 
 ## Questions
 If you have any questions, comments, or suggestions, please reach out to Yeon-Ji Song (yjsong@snu.ac.kr)
+
