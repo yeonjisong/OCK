@@ -2,15 +2,13 @@
 
 [Yeon-Ji Song](https://yeonjisong.github.io/), &nbsp; Suhyung Choi, &nbsp; Jaein Kim, &nbsp; Jin-Hwa Kim, &nbsp; Byoung-Tak Zhang 
 
-[ICCV 2025]() | <a href="" target="_blank">arXiv</a>
+[ICCV 2025](https://iccv.thecvf.com/) | <a href="https://arxiv.org/abs/2404.18423" target="_blank">arXiv</a>
 
 ![image](figures/architecture.png)
 
 ## Abstract
-Human perception involves discerning complex multi-object scenes into time-static object appearance (\ie, size, shape, color) and time-varying object motion (\ie, location, velocity, acceleration). This innate ability to unconsciously understand the environment is the motivation behind the success of dynamic modeling. Object-centric representations have emerged as a promising tool for dynamics prediction, yet they primarily focus on the objects' appearance, often overlooking other crucial attributes. In this paper, we propose Object-Centric Kinematics (OCK), a framework for dynamics prediction leveraging object-centric representations. Our model utilizes a novel component named object kinematics, which comprises low-level structured states of objects' position, velocity, and acceleration. The object kinematics are obtained via either implicit or explicit approaches, enabling comprehensive spatiotemporal object reasoning, and integrated through various transformer mechanisms, facilitating effective object-centric dynamics modeling. Our model demonstrates superior performance when handling objects and backgrounds in complex scenes characterized by a wide range of object attributes and dynamic movements. Moreover, our model demonstrates generalization capabilities across diverse synthetic environments, highlighting its potential for broad applicability in vision-related tasks.
+Human perception involves decomposing complex multiobject scenes into time-static object appearance (i.e., size, shape, color) and time-varying object motion (i.e., position, velocity, acceleration). For machines to achieve human-like intelligence in real-world interactions, understanding these physical properties of objects is essential, forming the foundation for dynamic video prediction. While recent advancements in object-centric transformers have demonstrated potential in video prediction, they primarily focus on object appearance, often overlooking motion dynamics, which is crucial for modeling dynamic interactions and maintaining temporal consistency in complex environments. To address these limitations, we propose OCK, a dynamic video prediction model leveraging object-centric kinematics and object slots. We introduce a novel component named Object Kinematics that comprises explicit object motions, serving as an additional attribute beyond conventional appearance features to model dynamic scenes. The Object Kinematics are integrated into various OCK mechanisms, enabling spatiotemporal prediction of complex object interactions over long video sequences. Our model demonstrates superior performance in handling complex scenes with intricate object attributes and motions, highlighting its potential for applicability in vision-related dynamics learning tasks.
 
-## Update
-The code is coming soon!
 
 ## Installation
 We recommend using [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) for environment setup. In our experiments, we use PyTorch 1.10.1 and CUDA 11.3:
@@ -26,15 +24,14 @@ The codebase heavily relies on [SlotFormer](https://github.com/pairlab/SlotForme
 Please refer to the step-by-step guidance on how to install the [requirements](https://github.com/AIS-Bonn/OCVP-object-centric-video-prediction/blob/master/assets/docs/INSTALL.md).
 
 ## Dataset Preparation
-All datasets should be downloaded or soft-linked to ./data/. All datasets should be downloaded or soft-linked to ./data/. Or you can modify the data_root value in the config files.
+All datasets should be downloaded or soft-linked to ./data/.
 
 **OBJ3D**: This dataset is adopted from [G-SWM](https://github.com/zhixuan-lin/G-SWM#datasets).
 Download it manually from the [Google drive](https://drive.google.com/file/d/1XSLW3qBtcxxvV-5oiRruVTlDlQ_Yatzm/view), or use the script provided in that repo.
 
-**MOVi**:
-Please download MOVi-{A-E} from the official [website](https://github.com/google-research/kubric/tree/main/challenges/movi).
+**MOVi**: Please download MOVi-{A-E} from the official [website](https://github.com/google-research/kubric/tree/main/challenges/movi).
 
-**WAYMO**: Download Waymo Open Dataset from their official [website](https://waymo.com/open/). You may need to sign in with your Google account to request access.
+**WAYMO**: Download Waymo Open Dataset from their official [website](https://waymo.com/open/). You may need to sign in with your Google account to request for access.
 
 ## Evaluation
 The basic experiment pipeline in this project is:
