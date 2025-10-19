@@ -24,7 +24,7 @@ The codebase heavily relies on [SlotFormer](https://github.com/pairlab/SlotForme
 Please refer to the step-by-step guidance on how to install the [requirements](https://github.com/AIS-Bonn/OCVP-object-centric-video-prediction/blob/master/assets/docs/INSTALL.md).
 
 ## Dataset Preparation
-All datasets should be downloaded or soft-linked to ./data/.
+All datasets should be downloaded or soft-linked to the ./data/ directory.
 
 **OBJ3D**: This dataset is adopted from [G-SWM](https://github.com/zhixuan-lin/G-SWM#datasets).
 Download it manually from the [Google drive](https://drive.google.com/file/d/1XSLW3qBtcxxvV-5oiRruVTlDlQ_Yatzm/view), or use the script provided in that repo.
@@ -33,67 +33,46 @@ Download it manually from the [Google drive](https://drive.google.com/file/d/1XS
 
 **WAYMO**: Download Waymo Open Dataset from their official [website](https://waymo.com/open/). You may need to sign in with your Google account to request for access.
 
-## Evaluation
-The basic experiment pipeline in this project is:
+## Training & Evaluation Pipeline
+The complete pipeline consists of two main training stages followed by an evaluation stage.
 
-1. Pre-train object-centric slot models `SAVi` on raw videos. After training, the models should be able to decompose the scene into meaningful objects, represented by a set of slots.
-2. Apply pretrained object-centric model to extract slots from videos and save them to disk.
-3. Train `OCK` over the extracted slots to learn the dynamics of videos.
-
-### Pretrain SAVi
-1. Create a new experiment under `/experiments` directory.
+### Stage 1: Pre-train SAVi
+First, we pre-train the SAVi model to learn object-centric slot representations from raw videos.
+1. Create Experiment: Generate a new experiment directory and configuration file:
 ```
-python src/01_create_experiment.py -d EXP_DIRECTORY --name NAME
-optional arguments:
-  -d EXP_DIRECTORY, --exp_directory EXP_DIRECTORY Directory where the experiment folder will be created
-  --name NAME           Name to give to the experiment
+python src/create_experiment.py -d EXP_DIRECTORY --name NAME
 ```
-Modify the experiment parameters located in `experiments/YOUR_EXP_DIR/YOUR_EXP_NAME/experiment_params.json` to adapt to your dataset and training needs.
-
-2. Then, train SAVi given the specified experiments parameters as:
+2. Configure Parameters: Modify the experiment parameters located in experiments/EXP_DIR/EXP_NAME/experiment_params.json to adapt to your dataset and training needs.
+3. Run Training: Start the SAVi training:
 ```
-python src/02_train_savi.py -d EXP_DIRECTORY [--checkpoint CHECKPOINT] [--resume_training]
-
-optional arguments:
-  -d EXP_DIRECTORY, --exp_directory EXP_DIRECTORY
-                        Path to the experiment directory
-  --checkpoint CHECKPOINT
-                        Checkpoint with pretrained parameters to load
-  --resume_training     For resuming training
+python src/train_savi.py -d EXP_DIRECTORY [--checkpoint CHECKPOINT]
 ```
 
-### Train OCK 
-3. Train an OCK model with the pretrained SAVi model.
-Beforehand, create a new predictor folder in the specfiied experiment directory as:
+### Stage 2: Train OCK
+Once SAVi is pre-trained, you can train the OCK predictor model, which learns the dynamics over the extracted slots.
+1. Create Predictor Experiment: Create a new predictor folder within your experiment directory:
 ```
-python src/01_create_predictor_experiment.py -d EXP_DIRECTORY --name NAME --predictor_name PREDICTOR_NAME
-
-optional arguments:
-  -d EXP_DIRECTORY, --exp_directory EXP_DIRECTORY
-                        Directory where the predictor experimentwill be created
-  --name NAME           Name to give to the predictor experiment
-  --predictor_name PREDICTOR_NAME
-                        Name of the predictor module to use: ['LSTM', 'Transformer', 'OCK']
+python src/create_ock_environment.py -d EXP_DIRECTORY --name NAME --baseline_name BASELINE_NAME
 ```
-Modify the experiment parameters located in `experiments/YOUR_EXP_DIR/YOUR_EXP_NAME/YOUR_PREDICTOR_NAME/experiment_params.json` to adapt the predictor training parameters to your dataset and training needs.
-
-4. Train your predictor (i.e., OCK) given the specified experiment parameters and a pretrained SAVi model:
+2. Configure Parameters: Modify the predictor's parameters located in experiments/EXP_DIR/EXP_NAME/BASELINE_NAME/experiment_params.json to suit your training needs.
+3. Run Training: Train OCK, providing the path to your pre-trained SAVi model:
 ```
-python 04_train_predictor.py -d EXP_DIRECTORY [--checkpoint CHECKPOINT] [--resume_training] -m SAVI_MODEL --name_predictor_experiment NAME_PREDICTOR_EXPERIMENT
+python src/train_ock.py -d EXP_DIRECTORY -m SAVI_MODEL --baseline_name NAME_PREDICTOR_EXPERIMENT [--checkpoint CHECKPOINT]
 ```
+SAVI_MODEL should be the path to your checkpoint from Stage 1 (e.g., experiments/EXP_DIR/EXP_NAME/checkpoints/model_best.pth).
 
 
-### Evaluate OCK
-To evaluate the video prediction task, please use [test.py](../ock/video_prediction/test.py) and run:
+### Stage 3: Evaluate OCK
+Finally, evaluate your trained OCK model on the video prediction task.
+1. Run Evaluation Script: Execute test_ock.py, specifying your dataset's config file and the path to your trained OCK weights from Stage 2.
 ```
-python ock/video_prediction/test_vp.py \
+python src/test_ock.py \
     --params ock/video_prediction/configs/ock_{dataset}_params.py \
-    --weight $WEIGHT
+    --weight /path/to/your/trained/OCK_WEIGHT.pth
 ```
-This will compute and print all the metrics.
-Besides, it will also save 10 videos for visualization under `vis/obj3d/$PARAMS/`.
-If you only want to do visualizations (i.e. not testing the metrics), simply use the `--save_num` args and set it to a positive value.
-
+Here, replace {dataset} with obj3d, movi, etc. The weight file will be in your predictor experiment directory (e.g., experiments/YOUR_EXP_DIR/.../YOUR_PREDICTOR_NAME/checkpoints/model_best.pth).
+2. Review Metrics: The script will compute and print all evaluation metrics to the console.
+3. Generate Visualizations: To save output videos for visualization (to vis/obj3d/$PARAMS/), add the --save_num argument. This will save the specified number of videos.
 
 ## Citation
 If you find our work useful in your research, please consider citing our paper!
