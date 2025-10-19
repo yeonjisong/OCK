@@ -74,6 +74,11 @@ Here, replace {dataset} with obj3d, movi, etc. The weight file will be in your p
 2. Review Metrics: The script will compute and print all evaluation metrics to the console.
 3. Generate Visualizations: To save output videos for visualization (to vis/obj3d/$PARAMS/), add the --save_num argument. This will save the specified number of videos.
 
+## TODO
+- [] Training script
+- [ ] Evaluation script
+- [ ] Pretrained weights
+
 ## Citation
 If you find our work useful in your research, please consider citing our paper!
 
