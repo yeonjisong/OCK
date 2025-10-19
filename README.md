@@ -67,10 +67,11 @@ Finally, evaluate your trained OCK model on the video prediction task.
 1. Run Evaluation Script: Execute test_ock.py, specifying your dataset's config file and the path to your trained OCK weights from Stage 2.
 ```
 python src/test_ock.py \
-    --params ock/video_prediction/configs/ock_{dataset}_params.py \
+    --params configs/ock_{dataset}_params.py \
     --weight /path/to/your/trained/OCK_WEIGHT.pth
 ```
-Here, replace {dataset} with obj3d, movi, etc. The weight file will be in your predictor experiment directory (e.g., experiments/YOUR_EXP_DIR/.../YOUR_PREDICTOR_NAME/checkpoints/model_best.pth).
+Here, replace {dataset} with obj3d, movi, etc. The weight file will be in your predictor experiment directory named "model_best.pth".
+
 2. Review Metrics: The script will compute and print all evaluation metrics to the console.
 3. Generate Visualizations: To save output videos for visualization (to vis/obj3d/$PARAMS/), add the --save_num argument. This will save the specified number of videos.
 
